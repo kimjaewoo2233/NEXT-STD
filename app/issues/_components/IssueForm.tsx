@@ -14,8 +14,8 @@ import { Text } from "@radix-ui/themes";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import Spinner from "@/app/components/Spinner";
 import { Issue } from "@prisma/client";
+import SimpleMDE from "react-simplemde-editor";
 
-const SimpleMDE = dynamic(() => import('react-simplemde-editor'), { ssr: false});
 type IssueFormData = z.infer<typeof issueSchema>; // 스키마 기반으로 타입생성
 
 const IssueForm = ({ issue }: { issue?: Issue }) => {
@@ -43,6 +43,7 @@ const IssueForm = ({ issue }: { issue?: Issue }) => {
 
              }           
              router.push("/issues");
+             router.refresh();
              setSubmitting(false);
 
          }catch(error){
