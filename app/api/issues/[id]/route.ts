@@ -1,6 +1,7 @@
 import { issueSchema } from "@/app/validationSchemas";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/prisma/client";
+import delay from "delay";
 
 export async function PATCH(
     request: NextRequest,
@@ -34,4 +35,25 @@ export async function PATCH(
 
     return NextResponse.json(updatedIssue);
 
+}
+
+export async function DELETE(
+    request: NextRequest,
+    { params }: { params: { id: string }}
+){
+    await delay(200);
+    const issue = await prisma.issue.findUnique({
+        where: { id: parseInt(params.id) }
+    });
+
+    if(!issue){
+        return NextResponse.json(
+            { error: "유효하지 않은 이슈입니다." },
+            { status: 404 }
+        );
+    }
+
+    await prisma.issue.delete({ where: { id: issue.id }});
+
+    return NextResponse.json({});
 }
