@@ -11,6 +11,9 @@ import IssueDetails from './IssueDetails';
 import { notFound } from 'next/dist/client/components/not-found';
 import { EditIssueButton } from './EditIssueButton';
 import DeleteIssueButton from './DeleteIssueButton';
+import { getServerSession } from 'next-auth';
+import authOptions from '@/app/auth/authOptions';
+import AssigneeSelect from './AssigneeSelect';
 
 interface Props {
     params: { id: string }
@@ -18,7 +21,7 @@ interface Props {
 
 
 const IssueDetailPage = async ({ params }: Props) => {
-
+    const session = await getServerSession(authOptions); 
     const numericId = parseInt(params.id, 10);
 
     if(isNaN(numericId) || numericId.toString() !== params.id ){
@@ -38,12 +41,15 @@ const IssueDetailPage = async ({ params }: Props) => {
                <IssueDetails issue={issue}/>
             </Box>
 
-            <Box>
-               <Flex direction="column" gap="4">
-                    <EditIssueButton issueId={issue.id}/>
-                    <DeleteIssueButton issueId={issue.id}/>
-               </Flex>
-            </Box>
+            {session && (
+                 <Box>
+                    <Flex direction="column" gap="4">
+                        <AssigneeSelect issue={issue}/>
+                        <EditIssueButton issueId={issue.id}/>
+                        <DeleteIssueButton issueId={issue.id}/>
+                    </Flex>
+                </Box>
+            )}
         </Grid>
   )
 }
